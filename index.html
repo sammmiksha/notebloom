@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoteBloom — Cute Study Notebook Widget</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#b57aed">
+</head>
+
+<body>
+
+  <!-- Background Desk (main container) -->
+  <div id="desk" class="glass-panel">
+
+    <!--            PAGE 1: DASHBOARD               -->
+    <div id="dashboard">
+      <header class="dashboard-header">
+        <div class="logo-container">
+          <span class="logo-icon">🌸</span>
+          <h1 class="logo-text">NoteBloom</h1>
+        </div>
+
+        <div class="search-bar-container">
+          <svg class="search-icon" viewBox="0 0 24 24">
+            <path
+              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+          </svg>
+          <input type="text" id="search-bar" class="search-input" placeholder="Search in here">
+        </div>
+
+        <div class="header-actions">
+          <button id="btn-settings" class="btn-icon" title="Themes & Settings">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87a.49.49 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="notebook-section">
+        <div id="notebook-grid" class="notebook-grid">
+          <!-- Create Notebook Card -->
+          <div id="create-notebook-card" class="create-card">
+            <span class="create-plus">+</span>
+            <span class="create-text">New Notebook</span>
+          </div>
+          <!-- Notebook Cards get populated here -->
+        </div>
+      </main>
+    </div>
+
+    <!--            PAGE 2: NOTES WIDGET            -->
+    <div id="notes-widget" class="notes-widget glass-panel hidden">
+
+      <!-- Top Window Bar -->
+      <header id="widget-header" class="widget-header">
+        <div class="widget-title-area">
+          <span class="widget-icon">📓</span>
+          <span id="widget-title" class="widget-title" title="Double click to rename">Lecture Notes</span>
+        </div>
+        <div class="widget-controls">
+          <button id="btn-minimize" class="btn-ctrl" title="Minimize">
+            <svg viewBox="0 0 16 16" width="12" height="12">
+              <line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button id="btn-maximize" class="btn-ctrl" title="Maximize">
+            <svg id="svg-max" viewBox="0 0 16 16" width="12" height="12">
+              <rect x="2.5" y="2.5" width="11" height="11" rx="1.5" fill="none" stroke="currentColor"
+                stroke-width="1.5" />
+            </svg>
+            <svg id="svg-restore" class="hidden" viewBox="0 0 16 16" width="12" height="12">
+              <rect x="4.5" y="1.5" width="9" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.2" />
+              <rect x="1.5" y="4.5" width="9" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.2" />
+            </svg>
+          </button>
+          <button id="btn-close" class="btn-ctrl btn-ctrl-close" title="Close Notebook">
+            <svg viewBox="0 0 16 16" width="12" height="12">
+              <line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              <line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Toolbar for Editor formatting -->
+      <div class="widget-toolbar">
+        <div class="toolbar-group">
+          <!-- Font Family Selection -->
+          <select id="font-family" class="tb-select" title="Font Family">
+            <option value="'Outfit', sans-serif" style="font-family: 'Outfit', sans-serif;">Outfit (Clean)</option>
+            <option value="'Caveat', cursive" style="font-family: 'Caveat', cursive;">Caveat (Handwriting)</option>
+            <option value="'Playfair Display', serif" style="font-family: 'Playfair Display', serif;">Playfair (Elegant)
+            </option>
+            <option value="'Fira Code', monospace" style="font-family: 'Fira Code', monospace;">Fira (Code)</option>
+          </select>
+
+          <!-- Font Size Selection -->
+          <select id="font-size" class="tb-select" title="Font Size">
+            <option value="2">Small</option>
+            <option value="3" selected>Normal</option>
+            <option value="4">Medium</option>
+            <option value="5">Large</option>
+            <option value="6">Heading</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <!-- Page Layout Selection -->
+          <select id="page-layout" class="tb-select" title="Page Layout">
+            <option value="blank">Blank</option>
+            <option value="ruled">Lines</option>
+            <option value="grid">Grid</option>
+            <option value="dot-grid">Dotted</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <!-- Bold Button -->
+          <button id="btn-bold" class="btn-tb" title="Bold (Ctrl+B)">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c1.1 0 2 .9 2 2s-.9 2-2 2h-3v-4zm3.5 9H10v-4h3.5c1.1 0 2 .9 2 2s-.9 2-2 2z" />
+            </svg>
+          </button>
+          <!-- Italic Button -->
+          <button id="btn-italic" class="btn-tb" title="Italic (Ctrl+I)">
+            <svg viewBox="0 0 24 24">
+              <path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z" />
+            </svg>
+          </button>
+          <!-- Underline Button -->
+          <button id="btn-underline" class="btn-tb" title="Underline (Ctrl+U)">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="toolbar-group">
+          <!-- Text Color Selection Dropdown -->
+          <select id="text-color" class="tb-select" title="Text Color">
+            <option value="#2b2b2b" style="color: #2b2b2b; font-weight: 600;">⚫ Black</option>
+            <option value="#9b5de5" style="color: #9b5de5; font-weight: 600;">🟣 Purple</option>
+            <option value="#f15bb5" style="color: #f15bb5; font-weight: 600;">💗 Pink</option>
+            <option value="#2563eb" style="color: #2563eb; font-weight: 600;">🔵 Blue</option>
+            <option value="#10b981" style="color: #10b981; font-weight: 600;">🟢 Green</option>
+            <option value="#ef4444" style="color: #ef4444; font-weight: 600;">🔴 Red</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Editor Writing Space -->
+      <div id="widget-body" class="widget-body">
+        <div id="notes-editor" class="notes-editor style-blank" contenteditable="true"
+          placeholder="Start typing your lecture notes here... (Paste images with Ctrl+V)"></div>
+      </div>
+
+      <!-- Window Footer -->
+      <footer class="widget-footer">
+        <div id="word-counter">0 words</div>
+        <div id="save-status" class="save-status">
+          <div id="save-dot" class="save-indicator-dot"></div>
+          <span id="save-text">All changes saved</span>
+        </div>
+      </footer>
+    </div>
+
+    <!--          PAGE 3: THEMES & SETTINGS         -->
+    <div id="settings-modal" class="modal-overlay">
+      <div class="modal-container glass-panel">
+        <header class="modal-header">
+          <h3>Themes & Settings</h3>
+          <button id="btn-settings-close" class="btn-ctrl" title="Close">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+          </button>
+        </header>
+
+        <div class="modal-body">
+          <!-- Theme Selection -->
+          <div class="settings-section">
+            <h4 class="settings-label">App Theme</h4>
+            <div class="theme-options">
+              <button class="theme-opt-btn active" data-theme="lavender-dream">
+                <div class="theme-preview-dot" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);">
+                </div>
+                Lavender Dream
+              </button>
+              <button class="theme-opt-btn" data-theme="pastel-bloom">
+                <div class="theme-preview-dot" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+                </div>
+                Pastel Bloom
+              </button>
+              <button class="theme-opt-btn" data-theme="midnight-violet">
+                <div class="theme-preview-dot" style="background: linear-gradient(135deg, #130026 0%, #3a0066 100%);">
+                </div>
+                Midnight Violet
+              </button>
+            </div>
+          </div>
+
+          <!-- Auto-save Toggle -->
+          <div class="settings-section">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-title">Auto-Save Notes</span>
+                <span class="toggle-desc">Automatically save edits as you type</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggle-autosave" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="btn-settings-save" class="btn-primary">Apply Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <!--            POPUP: PROMPT NAME              -->
+    <div id="prompt-modal" class="modal-overlay">
+      <div class="modal-container glass-panel">
+        <header class="modal-header">
+          <h3 id="prompt-title">New Notebook</h3>
+          <button id="btn-prompt-close" class="btn-ctrl">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+          </button>
+        </header>
+        <div class="modal-body">
+          <div class="settings-section">
+            <label id="prompt-label" class="settings-label">Notebook Name</label>
+            <input type="text" id="prompt-input" class="modal-input" placeholder="My Awesome Notebook" maxlength="40">
+          </div>
+        </div>
+        <div class="modal-footer prompt-buttons">
+          <button id="btn-prompt-cancel" class="btn-secondary">Cancel</button>
+          <button id="btn-prompt-confirm" class="btn-primary">Create</button>
+        </div>
+      </div>
+    </div>
+
+    <!--            POPUP: DELETE CONFIRM           -->
+    <div id="delete-modal" class="modal-overlay">
+      <div class="modal-container glass-panel">
+        <header class="modal-header">
+          <h3>Delete Notebook</h3>
+          <button id="btn-delete-close" class="btn-ctrl">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+          </button>
+        </header>
+        <div class="modal-body">
+          <p style="font-size: 15px; line-height: 1.5;">Are you sure you want to delete <strong
+              id="delete-notebook-name">this notebook</strong>? This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer prompt-buttons">
+          <button id="btn-delete-cancel" class="btn-secondary">Cancel</button>
+          <button id="btn-delete-confirm" class="btn-primary"
+            style="background-color: #ef4444; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.25);">Delete</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Script Declarations (Standard scripts loaded in order) -->
+  <script src="database.js"></script>
+  <script src="editor.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
