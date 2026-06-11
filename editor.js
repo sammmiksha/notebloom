@@ -27,6 +27,7 @@
       // Register Event Listeners
       this.editor.addEventListener('paste', this.handlePaste.bind(this));
       this.editor.addEventListener('input', this.handleInput.bind(this));
+      this.editor.addEventListener('keyup', this.handleKeyUp.bind(this));
       this.editor.addEventListener('mousedown', this.handleMouseDown.bind(this));
 
       // Global event listeners for drag-resize and image dragging
@@ -78,6 +79,92 @@
         detail: { html: this.editor.innerHTML }
       });
       this.editor.dispatchEvent(event);
+    },
+
+    /**
+     * Handles keyup events to trigger the math auto-solver on '='.
+     * @param {KeyboardEvent} e 
+     */
+    handleKeyUp(e) {
+      if (e.key === '=') {
+        this.checkAndSolveMath();
+      }
+    },
+
+    /**
+     * Checks if the text preceding the cursor contains a valid math expression,
+     * evaluates it, and inserts the solved answer.
+     */
+    checkAndSolveMath() {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const container = range.startContainer;
+        const offset = range.startOffset;
+
+        if (container.nodeType === Node.TEXT_NODE) {
+          const textBeforeCursor = container.textContent.substring(0, offset);
+          
+          // Regex matching a math expression followed by '='
+          // Allows digits, spaces, decimal dots, brackets, +, -, *, /, x, ÷
+          const match = textBeforeCursor.match(/((?:[0-9\.\s\+\-\*\/\(\)]|x|÷)+)=\s*$/);
+          if (match) {
+            const expr = match[1];
+            const answer = this.evaluateExpression(expr);
+            if (answer !== null) {
+              const insertText = " " + answer;
+              const textNode = document.createTextNode(insertText);
+              
+              range.insertNode(textNode);
+              
+              // Move selection cursor to the end of the inserted answer
+              range.setStartAfter(textNode);
+              range.collapse(true);
+              selection.removeAllRanges();
+              selection.addRange(range);
+              
+              // Trigger save
+              this.handleInput();
+            }
+          }
+        }
+      }
+    },
+
+    /**
+     * Safely sanitizes and evaluates a math expression string.
+     * Returns the evaluated number or null if invalid.
+     * @param {string} expr 
+     * @returns {number|null}
+     */
+    evaluateExpression(expr) {
+      // Replace visual operators with JS mathematical equivalents
+      let sanitized = expr.replace(/x/g, '*').replace(/÷/g, '/');
+      
+      // Remove whitespace
+      sanitized = sanitized.replace(/\s+/g, '');
+      
+      // Strict whitelist: only digits, decimals, operations, parentheses
+      if (!/^[0-9\.\+\-\*\/\(\)]+$/.test(sanitized)) {
+        return null;
+      }
+      
+      // Guard: must contain at least one operation symbol or bracket to prevent solving list numbers (e.g. "1 =")
+      if (!/[\+\-\*\/\(\)]/.test(sanitized)) {
+        return null;
+      }
+      
+      try {
+        // Evaluate expression safely since strict whitelist ensures it has no malicious code
+        const result = new Function(`return (${sanitized})`)();
+        if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
+          // Prevent floating point errors (e.g. 0.1 + 0.2 = 0.30000000000000004) by rounding to 10 decimal places
+          return parseFloat(result.toFixed(10));
+        }
+      } catch (e) {
+        // Fail silently on syntax errors
+      }
+      return null;
     },
 
     /**

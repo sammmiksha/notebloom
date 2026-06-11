@@ -11,8 +11,6 @@
   <link rel="icon" type="image/png" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
   <link rel="apple-touch-icon" href="assets/icon-192.png">
-  <link rel="shortcut icon" href="assets/favicon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png">
 </head>
 
 <body>
@@ -158,12 +156,68 @@
             <option value="#ef4444" style="color: #ef4444; font-weight: 600;">🔴 Red</option>
           </select>
         </div>
+        <div class="toolbar-group">
+          <!-- Calculator Toggle Button -->
+          <button id="btn-calculator" class="btn-tb" title="Toggle Calculator (Ctrl+Alt+C)">
+            <svg viewBox="0 0 24 24" style="width: 15px; height: 15px;"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 7h2v2H7zm0 4h2v2H7zm0 4h2v2H7zm4-8h2v2h-2zm0 4h2v2h-2zm0 4h2v2h-2zm4-8h2v10h-2z"/></svg>
+          </button>
+        </div>
       </div>
+      
+      <!-- Editor & Drawer Container -->
+      <div class="widget-main-container">
+        <div id="widget-body" class="widget-body">
+          <div id="notes-editor" class="notes-editor style-blank" contenteditable="true" placeholder="Start typing your lecture notes here... (Paste images with Ctrl+V)"></div>
+        </div>
+        
+        <!-- Calculator Drawer -->
+        <div id="calculator-drawer" class="calculator-drawer hidden">
+          <div class="pixel-calc">
+            <div class="calc-screen">
+              <div id="calc-expr" class="calc-expr"></div>
+              <div id="calc-display" class="calc-display">0</div>
+            </div>
+            
+            <div class="calc-top-controls">
+              <div class="calc-top-col">
+                <button class="calc-btn pill" data-val="CE">CE</button>
+                <button class="calc-btn pill" data-val="backspace">←</button>
+              </div>
+              <div class="calc-center-logo">🌸</div>
+              <div class="calc-top-col">
+                <button class="calc-btn pill" data-val="OFF">OFF</button>
+                <button class="calc-btn pill" data-val="insert">→</button>
+              </div>
+            </div>
+            
+            <div class="calc-grid">
+              <button class="calc-btn" data-val="C">C</button>
+              <button class="calc-btn" data-val="*">x</button>
+              <button class="calc-btn" data-val="%">%</button>
+              <button class="calc-btn" data-val="/">/</button>
 
-      <!-- Editor Writing Space -->
-      <div id="widget-body" class="widget-body">
-        <div id="notes-editor" class="notes-editor style-blank" contenteditable="true"
-          placeholder="Start typing your lecture notes here... (Paste images with Ctrl+V)"></div>
+              <button class="calc-btn" data-val="7">7</button>
+              <button class="calc-btn" data-val="8">8</button>
+              <button class="calc-btn" data-val="9">9</button>
+              <button class="calc-btn" data-val="*">*</button>
+
+              <button class="calc-btn" data-val="4">4</button>
+              <button class="calc-btn" data-val="5">5</button>
+              <button class="calc-btn" data-val="6">6</button>
+              <button class="calc-btn" data-val="-">-</button>
+
+              <button class="calc-btn" data-val="1">1</button>
+              <button class="calc-btn" data-val="2">2</button>
+              <button class="calc-btn" data-val="3">3</button>
+              <button class="calc-btn" data-val="+">+</button>
+
+              <button class="calc-btn" data-val="sqrt">√</button>
+              <button class="calc-btn" data-val="0">0</button>
+              <button class="calc-btn" data-val=".">.</button>
+              <button class="calc-btn" data-val="=">=</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Window Footer -->
@@ -197,17 +251,17 @@
               <button class="theme-opt-btn active" data-theme="lavender-dream">
                 <div class="theme-preview-dot" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);">
                 </div>
-                Blue
+                Lavender Dream
               </button>
               <button class="theme-opt-btn" data-theme="pastel-bloom">
                 <div class="theme-preview-dot" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
                 </div>
-                Pastel
+                Pastel Bloom
               </button>
               <button class="theme-opt-btn" data-theme="midnight-violet">
                 <div class="theme-preview-dot" style="background: linear-gradient(135deg, #130026 0%, #3a0066 100%);">
                 </div>
-                Violet
+                Midnight Violet
               </button>
             </div>
           </div>

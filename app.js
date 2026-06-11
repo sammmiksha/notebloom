@@ -20,6 +20,11 @@
     saveTimeout: null
   };
 
+  // Calculator State
+  let calcExpression = '';
+  let calcInput = '0';
+  let calcIsOff = false;
+
   // Cover design pools to assign randomly to new notebooks
   const COVER_CLASSES = ['cover-lavender', 'cover-pink', 'cover-violet', 'cover-emerald', 'cover-blue', 'cover-orange'];
   const CUTE_FLOWERS = ['🌸', '✨', '🌼', '🌷', '🌿', '🎀', '💜', '💖', '🧸', '🍧'];
@@ -66,6 +71,9 @@
 
       // 4. Load Notebooks
       await refreshNotebooks();
+
+      // 4.5. Initialize Retro Calculator
+      initCalculator();
 
       // 5. Setup UI Event Listeners
       setupEventListeners();
@@ -423,6 +431,18 @@
    * Sets up all click event bindings.
    */
   function setupEventListeners() {
+    // Prevent focus loss on toolbar button mousedown
+    const preventFocusLoss = (btnId) => {
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        btn.addEventListener('mousedown', (e) => e.preventDefault());
+      }
+    };
+    preventFocusLoss('btn-bold');
+    preventFocusLoss('btn-italic');
+    preventFocusLoss('btn-underline');
+    preventFocusLoss('btn-calculator');
+
     // 1. Dashboard Events
     document.getElementById('create-notebook-card').addEventListener('click', createNotebookPrompt);
     
@@ -435,6 +455,15 @@
     document.getElementById('btn-close').addEventListener('click', closeActiveNotebook);
     document.getElementById('btn-minimize').addEventListener('click', minimizeWidget);
     document.getElementById('btn-maximize').addEventListener('click', toggleMaximizeWidget);
+    document.getElementById('btn-calculator').addEventListener('click', toggleCalculatorDrawer);
+
+    // Global shortcut Ctrl+Alt+C to toggle calculator
+    window.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.altKey && e.code === 'KeyC') {
+        e.preventDefault();
+        toggleCalculatorDrawer();
+      }
+    });
 
     // Click on minimized header restores it
     widgetHeaderEl.addEventListener('click', (e) => {
@@ -688,6 +717,184 @@
     closeBtn.onclick = cleanUp;
 
     modal.classList.add('active');
+  }
+
+  // --- Calculator functions ---
+
+  function initCalculator() {
+    const calcContainerEl = calcContainer();
+    if (!calcContainerEl) return;
+
+    // Attach click listeners to all calc buttons
+    const buttons = calcContainerEl.querySelectorAll('.calc-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        handleCalculatorInput(val);
+      });
+      // Prevent losing editor selection/focus when clicking calculator buttons
+      btn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+      });
+    });
+    
+    updateCalculatorDisplay();
+  }
+
+  function handleCalculatorInput(val) {
+    const screenEl = calcContainer().querySelector('.calc-screen');
+
+    // 1. OFF Switch Handler
+    if (val === 'OFF') {
+      calcIsOff = !calcIsOff;
+      if (calcIsOff) {
+        screenEl.classList.add('screen-off');
+      } else {
+        screenEl.classList.remove('screen-off');
+        calcExpression = '';
+        calcInput = '0';
+        updateCalculatorDisplay();
+      }
+      return;
+    }
+
+    if (calcIsOff) return; // Do nothing if screen is off
+
+    switch (val) {
+      case 'C':
+        calcExpression = '';
+        calcInput = '0';
+        break;
+      case 'CE':
+        calcInput = '0';
+        break;
+      case 'backspace':
+        if (calcInput.length > 1) {
+          calcInput = calcInput.slice(0, -1);
+        } else {
+          calcInput = '0';
+        }
+        break;
+      case 'insert':
+        insertCalcValueIntoEditor();
+        break;
+      case 'sqrt':
+        try {
+          const valNum = parseFloat(calcInput);
+          if (valNum >= 0) {
+            calcInput = parseFloat(Math.sqrt(valNum).toFixed(10)).toString();
+          } else {
+            calcInput = 'Error';
+          }
+        } catch (e) {
+          calcInput = 'Error';
+        }
+        break;
+      case '%':
+        try {
+          const valNum = parseFloat(calcInput);
+          calcInput = parseFloat((valNum / 100).toFixed(10)).toString();
+        } catch (e) {
+          calcInput = 'Error';
+        }
+        break;
+      case '+':
+      case '-':
+      case '*':
+      case '/':
+        if (calcInput !== 'Error') {
+          if (calcExpression && !calcInput) {
+            calcExpression = calcExpression.slice(0, -1) + val;
+          } else {
+            calcExpression += calcInput + val;
+            calcInput = '';
+          }
+        }
+        break;
+      case '=':
+        if (calcExpression && calcInput && calcInput !== 'Error') {
+          const fullExpr = calcExpression + calcInput;
+          try {
+            const sanitized = fullExpr.replace(/\s+/g, '');
+            if (/^[0-9\.\+\-\*\/]+$/.test(sanitized)) {
+              const result = new Function(`return (${sanitized})`)();
+              if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
+                calcInput = parseFloat(result.toFixed(10)).toString();
+                calcExpression = '';
+              } else {
+                calcInput = 'Error';
+              }
+            } else {
+              calcInput = 'Error';
+            }
+          } catch (e) {
+            calcInput = 'Error';
+          }
+        }
+        break;
+      default:
+        if (calcInput === '0' || calcInput === 'Error') {
+          if (val === '.') {
+            calcInput = '0.';
+          } else {
+            calcInput = val;
+          }
+        } else {
+          if (val === '.' && calcInput.includes('.')) {
+            break;
+          }
+          calcInput += val;
+        }
+        break;
+    }
+
+    updateCalculatorDisplay();
+  }
+
+  function updateCalculatorDisplay() {
+    const exprEl = document.getElementById('calc-expr');
+    const displayEl = document.getElementById('calc-display');
+    if (!exprEl || !displayEl) return;
+
+    let visualExpr = calcExpression.replace(/\*/g, ' x ').replace(/\//g, ' ÷ ');
+    exprEl.innerText = visualExpr;
+    displayEl.innerText = calcInput || '0';
+  }
+
+  function calcContainer() {
+    return document.getElementById('calculator-drawer');
+  }
+
+  function insertCalcValueIntoEditor() {
+    const val = document.getElementById('calc-display').innerText;
+    if (val === 'Error' || calcIsOff) return;
+    
+    editorEl.focus();
+    
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+      
+      const textNode = document.createTextNode(val);
+      range.insertNode(textNode);
+      
+      range.setStartAfter(textNode);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      
+      const event = new CustomEvent('editorChange', { bubbles: true });
+      editorEl.dispatchEvent(event);
+    }
+  }
+
+  function toggleCalculatorDrawer() {
+    const drawer = calcContainer();
+    const btn = document.getElementById('btn-calculator');
+    if (!drawer || !btn) return;
+    const isHidden = drawer.classList.toggle('hidden');
+    btn.classList.toggle('active', !isHidden);
   }
 
   // --- Utility functions ---
