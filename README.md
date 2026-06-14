@@ -32,7 +32,7 @@
 
 NoteBloom now includes a built-in **Study Calculator** that floats over your notes — drag it anywhere on screen, crunch numbers without switching apps, and keep writing without breaking your flow.
 
-<img width="760" alt="Floating Study Calculator" src="assets/screenshot-calculator-float.png" />
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/67aed41c-30ac-4f7d-8146-b38b0f3b01db" />
 
 > The calculator remembers its position and open/closed state between sessions, so it's right where you left it every time.
 
