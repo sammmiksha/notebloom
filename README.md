@@ -12,7 +12,8 @@
 
 <table>
   <tr>
-    <td><img width="760" alt="Dashboard Wide" src="https://github.com/user-attachments/assets/1f3c34a1-a4d7-4f39-9f5a-4b831c38844a" /></td>
+    <td><img width="760" alt="Dashboard Wide" alt="image" src="https://github.com/user-attachments/assets/e86127ae-937c-45f4-89d6-e1621332b5d0" />
+ </td>
     <td><img width="760" alt="Editor Wide" src="assets/screenshot-wide.png" /></td>
   </tr>
 </table>
