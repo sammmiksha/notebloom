@@ -1,4 +1,4 @@
-const CACHE_NAME = "notebloom-v6";
+const CACHE_NAME = "notebloom-v8";
 
 const FILES = [
   "./",
