@@ -170,8 +170,17 @@
           <div id="notes-editor" class="notes-editor style-blank" contenteditable="true" placeholder="Start typing your lecture notes here... (Paste images with Ctrl+V)"></div>
         </div>
         
+        <!-- Floating Calculator Toggle Button (FAB) -->
+        <button id="fab-calculator" class="fab-calculator" title="Toggle Study Calculator (Ctrl+Alt+C)">
+          <span>🧮</span>
+        </button>
+
         <!-- Calculator Drawer -->
         <div id="calculator-drawer" class="calculator-drawer hidden">
+          <div class="calc-drag-handle">
+            <span class="calc-drag-title">🌸 Study Calculator</span>
+            <button id="btn-calc-close" class="btn-calc-close" title="Close Calculator">×</button>
+          </div>
           <div class="pixel-calc">
             <div class="calc-screen">
               <div id="calc-expr" class="calc-expr"></div>
@@ -259,9 +268,9 @@
                 Pastel Bloom
               </button>
               <button class="theme-opt-btn" data-theme="midnight-violet">
-                <div class="theme-preview-dot" style="background: linear-gradient(135deg, #130026 0%, #3a0066 100%);">
+                <div class="theme-preview-dot" style="background: linear-gradient(135deg, #1b1525 0%, #302646 100%);">
                 </div>
-                Midnight Violet
+                Moonlit Sakura
               </button>
             </div>
           </div>

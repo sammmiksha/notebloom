@@ -442,6 +442,8 @@
     preventFocusLoss('btn-italic');
     preventFocusLoss('btn-underline');
     preventFocusLoss('btn-calculator');
+    preventFocusLoss('fab-calculator');
+    preventFocusLoss('btn-calc-close');
 
     // 1. Dashboard Events
     document.getElementById('create-notebook-card').addEventListener('click', createNotebookPrompt);
@@ -456,6 +458,16 @@
     document.getElementById('btn-minimize').addEventListener('click', minimizeWidget);
     document.getElementById('btn-maximize').addEventListener('click', toggleMaximizeWidget);
     document.getElementById('btn-calculator').addEventListener('click', toggleCalculatorDrawer);
+    
+    const fabBtn = document.getElementById('fab-calculator');
+    if (fabBtn) {
+      fabBtn.addEventListener('click', toggleCalculatorDrawer);
+    }
+    
+    const calcCloseBtn = document.getElementById('btn-calc-close');
+    if (calcCloseBtn) {
+      calcCloseBtn.addEventListener('click', toggleCalculatorDrawer);
+    }
 
     // Global shortcut Ctrl+Alt+C to toggle calculator
     window.addEventListener('keydown', (e) => {
@@ -739,6 +751,12 @@
     });
     
     updateCalculatorDisplay();
+
+    // Setup drag logic
+    initDraggableCalculator();
+
+    // Restore saved state & position
+    restoreCalculatorState();
   }
 
   function handleCalculatorInput(val) {
@@ -892,9 +910,146 @@
   function toggleCalculatorDrawer() {
     const drawer = calcContainer();
     const btn = document.getElementById('btn-calculator');
-    if (!drawer || !btn) return;
+    const fabBtn = document.getElementById('fab-calculator');
+    if (!drawer) return;
+
     const isHidden = drawer.classList.toggle('hidden');
-    btn.classList.toggle('active', !isHidden);
+    if (btn) btn.classList.toggle('active', !isHidden);
+    if (fabBtn) fabBtn.classList.toggle('active', !isHidden);
+
+    saveCalculatorState(!isHidden);
+  }
+
+  function saveCalculatorState(isOpen = null) {
+    const drawer = calcContainer();
+    if (!drawer) return;
+
+    const left = drawer.style.left;
+    const top = drawer.style.top;
+    const openVal = isOpen !== null ? isOpen : !drawer.classList.contains('hidden');
+
+    const state = {
+      left: left,
+      top: top,
+      isOpen: openVal
+    };
+
+    localStorage.setItem('notebloom_calculator_state', JSON.stringify(state));
+  }
+
+  function restoreCalculatorState() {
+    const drawer = calcContainer();
+    const btn = document.getElementById('btn-calculator');
+    const fabBtn = document.getElementById('fab-calculator');
+    if (!drawer) return;
+
+    const saved = localStorage.getItem('notebloom_calculator_state');
+    if (!saved) return;
+
+    try {
+      const state = JSON.parse(saved);
+
+      if (window.innerWidth > 992) {
+        if (state.left) drawer.style.left = state.left;
+        if (state.top) drawer.style.top = state.top;
+        if (state.left || state.top) {
+          drawer.style.right = 'auto';
+          drawer.style.bottom = 'auto';
+        }
+      }
+
+      if (state.isOpen) {
+        drawer.classList.remove('hidden');
+        if (btn) btn.classList.add('active');
+        if (fabBtn) fabBtn.classList.add('active');
+      } else {
+        drawer.classList.add('hidden');
+        if (btn) btn.classList.remove('active');
+        if (fabBtn) fabBtn.classList.remove('active');
+      }
+    } catch (e) {
+      console.error('Failed to restore calculator state', e);
+    }
+  }
+
+  function initDraggableCalculator() {
+    const drawer = document.getElementById('calculator-drawer');
+    if (!drawer) return;
+
+    const handle = drawer.querySelector('.calc-drag-handle') || drawer;
+    const container = drawer.parentElement;
+
+    let isDragging = false;
+    let startMouseX = 0;
+    let startMouseY = 0;
+    let startLeft = 0;
+    let startTop = 0;
+
+    handle.addEventListener('mousedown', (e) => {
+      if (window.innerWidth <= 992) return;
+      if (e.target.closest('.calc-btn') || e.target.closest('.calc-screen') || e.target.closest('.btn-calc-close')) {
+        return;
+      }
+
+      e.preventDefault();
+
+      isDragging = true;
+      startMouseX = e.clientX;
+      startMouseY = e.clientY;
+
+      startLeft = drawer.offsetLeft;
+      startTop = drawer.offsetTop;
+
+      document.body.style.cursor = 'grabbing';
+      handle.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+
+      e.preventDefault();
+
+      const deltaX = e.clientX - startMouseX;
+      const deltaY = e.clientY - startMouseY;
+
+      let newLeft = startLeft + deltaX;
+      let newTop = startTop + deltaY;
+
+      const containerRect = container.getBoundingClientRect();
+      const drawerRect = drawer.getBoundingClientRect();
+
+      const minLeft = 0;
+      const maxLeft = containerRect.width - drawerRect.width;
+      const minTop = 0;
+      const maxTop = containerRect.height - drawerRect.height;
+
+      newLeft = Math.max(minLeft, Math.min(newLeft, maxLeft));
+      newTop = Math.max(minTop, Math.min(newTop, maxTop));
+
+      drawer.style.left = `${newLeft}px`;
+      drawer.style.top = `${newTop}px`;
+      drawer.style.right = 'auto';
+      drawer.style.bottom = 'auto';
+    });
+
+    document.addEventListener('mouseup', (e) => {
+      if (!isDragging) return;
+
+      isDragging = false;
+      document.body.style.cursor = '';
+      handle.style.cursor = '';
+
+      saveCalculatorState();
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 992) {
+        drawer.style.left = '';
+        drawer.style.top = '';
+        drawer.style.right = '';
+        drawer.style.bottom = '';
+      }
+    });
   }
 
   // --- Utility functions ---

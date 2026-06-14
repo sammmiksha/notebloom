@@ -70,8 +70,9 @@
 
     /**
      * Handles typing and formatting changes to trigger auto-save and updates.
+     * @param {InputEvent} [e]
      */
-    handleInput() {
+    handleInput(e) {
       this.updateWordCount();
       // Dispatch custom edit event for app.js auto-saver
       const event = new CustomEvent('editorChange', {
@@ -79,6 +80,11 @@
         detail: { html: this.editor.innerHTML }
       });
       this.editor.dispatchEvent(event);
+
+      // Trigger math solver if user typed '=' (crucial for mobile/virtual keyboards)
+      if (e?.data && typeof e.data === 'string' && e.data.endsWith('=')) {
+        this.checkAndSolveMath();
+      }
     },
 
     /**
