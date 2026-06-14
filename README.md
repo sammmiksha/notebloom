@@ -23,7 +23,18 @@
     <td><img width="300" alt="Dashboard Narrow View" src="https://github.com/user-attachments/assets/be6573b2-a010-4f2e-aa74-c181c9f398e5" /></td>
   </tr>
 </table>
+
 > **Tip:** The app adapts its layout depending on window size — snap it beside your lecture video for a distraction-free note-taking experience!
+
+---
+
+## 🧮 Floating Study Calculator
+
+NoteBloom now includes a built-in **Study Calculator** that floats over your notes — drag it anywhere on screen, crunch numbers without switching apps, and keep writing without breaking your flow.
+
+<img width="760" alt="Floating Study Calculator" src="assets/screenshot-calculator-float.png" />
+
+> The calculator remembers its position and open/closed state between sessions, so it's right where you left it every time.
 
 ---
 
@@ -37,6 +48,7 @@ You can:
 - **Paste screenshots directly** from your clipboard into your notes
 - Choose between **page styles** (Blank, Ruled, Grid, Dot Grid) to match how you think
 - Switch between multiple **themes** to personalize your workspace
+- Use the built-in **floating Study Calculator** without leaving your notes
 - Work **completely offline** — no internet needed after install
 - **Install it like a native app** on Windows, Mac, Android, or iOS via Chrome
 
@@ -101,6 +113,12 @@ Use the theme dropdown (e.g., **Purple**) to change the color scheme of your edi
 2. Click inside your note area.
 3. Press **Ctrl+V** (or **Cmd+V** on Mac) — the screenshot pastes directly into your note.
 
+### Using the Study Calculator
+- Click the **calculator FAB** (floating action button) in the bottom-right corner of the editor to open the Study Calculator.
+- On desktop, drag it anywhere on screen — it stays put between sessions.
+- On mobile, it opens as a bottom-sheet panel so it never blocks your writing area.
+- Type math expressions directly in your notes (e.g., `6 + 4 =`) and they evaluate inline — works on both desktop and mobile keyboards.
+
 ### Renaming or Deleting a Notebook
 - On the dashboard, each notebook card shows **Rename** and **Delete** options beneath it.
 - Click **Rename** to give it a new title, or **Delete** to remove it permanently.
@@ -120,6 +138,8 @@ Use the theme dropdown (e.g., **Purple**) to change the color scheme of your edi
 | 🖼️ Screenshot Pasting | Paste images from clipboard directly into notes |
 | 💾 Auto-Save | Notes saved automatically using IndexedDB (browser storage) |
 | 🔍 Search | Search across notebooks instantly |
+| 🧮 Floating Calculator | Draggable Study Calculator with session persistence |
+| ➗ Inline Math | Type `6 + 4 =` in your notes and get the result instantly |
 | 📱 PWA / Installable | Install on desktop or mobile like a native app |
 | 🌐 Offline Support | Works without internet after first load |
 | 🔠 Rich Text | Bold, Italic, Underline formatting |
@@ -148,10 +168,11 @@ No frameworks, no backend, no server — NoteBloom runs entirely in your browser
 ```
 notebloom/
 ├── assets/
-│   ├── icon-192.png          # PWA icon (small)
-│   ├── icon-512.png          # PWA icon (large)
-│   ├── screenshot-wide.png   # Wide editor screenshot
-│   └── screenshot-narrow.png # Narrow editor screenshot
+│   ├── icon-192.png                    # PWA icon (small)
+│   ├── icon-512.png                    # PWA icon (large)
+│   ├── screenshot-wide.png             # Wide editor screenshot
+│   ├── screenshot-narrow.png           # Narrow editor screenshot
+│   └── screenshot-calculator-float.png # Floating calculator screenshot
 ├── app.js                    # Core app logic & notebook management
 ├── database.js               # IndexedDB storage layer
 ├── editor.js                 # Note editor logic (formatting, page styles)
@@ -163,12 +184,53 @@ notebloom/
 
 ---
 
+## 📋 Changelog
+
+### v1.1.0 — Floating Calculator & Mobile Polish
+
+#### 📱 Mobile Math Solver Fix
+- Fixed automatic inline math evaluation on mobile devices
+- Expressions like `6 + 4 =`, `7 × 7 =`, and `12 / 3 =` now evaluate correctly on Android and iOS virtual keyboards
+- Added input-event based detection for `=` while preserving existing desktop keyboard support
+
+#### 🧮 Responsive Study Calculator
+- **Desktop:** Replaced the fixed sidebar calculator with a draggable floating window; position and open/close state persist between sessions
+- **Tablet:** Calculator appears as a floating utility panel with a simplified interaction model
+- **Mobile:** Calculator opens as a bottom-sheet panel so the full writing area stays usable
+
+#### ✨ UX Improvements
+- Added a Floating Action Button (FAB) for quick one-tap calculator access
+- Improved editor workspace utilization by removing the old split-screen layout
+- Calculator close button and header controls added
+- Improved responsive behavior across desktop, tablet, and mobile
+
+#### 🎨 Theme Improvements
+- Calculator now integrates cleanly with all existing themes
+- Consistent styling between editor and calculator components
+- Theme system prepared for upcoming dark mode support
+
+#### 💾 Persistence Improvements
+- Calculator visibility state remembered between sessions
+- Calculator position restored automatically on desktop
+- All existing notebook data remains fully compatible — no migration needed
+
+#### 🚧 Experimental (In Development)
+The following features are in active development and not part of the stable release:
+- Bookshelf-based notebook organization system
+- Notebook spine and front-cover display modes
+- Multi-shelf notebook arrangement
+- Shelf customization and positioning controls
+- Enhanced notebook visual themes
+
+---
+
 ## 💡 Tips & Tricks
 
 - **Snap it beside your lecture!** Resize NoteBloom to a narrow window and snap it next to your video — it's designed to look great at any width.
 - **Use Grid pages for diagrams and equations** — the grid lines make freehand sketching in notes much cleaner.
 - **Organize by subject** — create one notebook per course so your notes never get mixed up.
 - **Screenshot workflow** — during a Zoom or Teams call, use your OS snipping tool and paste straight into your note without breaking flow.
+- **Keep the calculator handy** — drag it to a corner and leave it open; it'll be right there next session.
 
 ---
 
@@ -181,6 +243,7 @@ notebloom/
 - [ ] Tagging and folder organization
 - [ ] Dark mode support
 - [ ] Handwriting / stylus input support
+- [ ] Bookshelf-based notebook organization *(in development)*
 
 ---
 
